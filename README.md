@@ -4,6 +4,18 @@
 
 A Swift Package that handles library organization, notebook binders, markdown files, media storage, and JSON-based indexing. Perfect for note-taking apps, knowledge bases, or any app that needs hierarchical file organization.
 
+## 📖 Documentation
+
+📚 **[Visit the Wiki](https://github.com/fluhartyml/NightGardFileSystem/wiki)** for complete documentation:
+
+- **[Getting Started](https://github.com/fluhartyml/NightGardFileSystem/wiki/Getting-Started)** - Installation and basic setup
+- **[API Reference](https://github.com/fluhartyml/NightGardFileSystem/wiki/API-Reference)** - Complete API documentation
+- **[Architecture](https://github.com/fluhartyml/NightGardFileSystem/wiki/Architecture)** - Internal design and decisions
+- **[Permissions Setup](https://github.com/fluhartyml/NightGardFileSystem/wiki/Permissions-Setup)** - Info.plist keys and sandbox configuration
+- **[Security-Scoped Resources](https://github.com/fluhartyml/NightGardFileSystem/wiki/Security-Scoped-Resources)** - Deep dive into file access
+- **[Troubleshooting](https://github.com/fluhartyml/NightGardFileSystem/wiki/Troubleshooting)** - Common issues and solutions
+- **[Examples](https://github.com/fluhartyml/NightGardFileSystem/wiki/Examples)** - Complete working apps
+
 ## ✨ Features
 
 - **FileSystemManager**: Read/write markdown files with embedded media
