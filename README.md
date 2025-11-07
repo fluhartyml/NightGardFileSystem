@@ -181,6 +181,154 @@ Library/
 - **Page**: Individual markdown note
 - **Media**: Images/videos in binder's media folder
 
+## ⚠️ Important Setup Requirements
+
+### iOS Apps
+
+**1. Add Required Info.plist Keys**
+
+Your app needs permission to access user-selected folders. Add these to `Info.plist`:
+
+```xml
+<key>NSPhotoLibraryUsageDescription</key>
+<string>We need access to your photo library to save images in your notes.</string>
+
+<key>NSCameraUsageDescription</key>
+<string>We need access to your camera to take photos for your notes.</string>
+
+<key>UISupportsDocumentBrowser</key>
+<true/>
+```
+
+**2. Enable File Access Capabilities**
+
+In Xcode:
+1. Select your target
+2. Go to **Signing & Capabilities**
+3. Click **+ Capability**
+4. Add: **File Provider** (if accessing iCloud Drive)
+
+**3. Enable App Sandbox (if distributing via App Store)**
+
+For App Store distribution:
+1. **Signing & Capabilities** → Add **App Sandbox**
+2. Under **File Access**:
+   - ✅ User Selected File: Read/Write
+   - ✅ Downloads Folder: Read/Write (optional)
+
+**Important**: Security-scoped bookmarks require proper entitlements!
+
+### macOS Apps
+
+**1. Disable App Sandbox (Recommended for Self-Distribution)**
+
+If self-distributing (not via Mac App Store):
+- **Signing & Capabilities** → Remove **App Sandbox**
+- This gives full filesystem access without security-scoped resource limitations
+
+**2. OR Configure App Sandbox (Mac App Store)**
+
+If distributing via Mac App Store, keep sandbox enabled:
+1. **Signing & Capabilities** → **App Sandbox**
+2. Under **File Access**:
+   - ✅ User Selected File: Read/Write
+   - ✅ Downloads Folder: Read/Write
+
+**3. Add Entitlements**
+
+For sandboxed macOS apps, add to entitlements file:
+
+```xml
+<key>com.apple.security.files.user-selected.read-write</key>
+<true/>
+<key>com.apple.security.files.bookmarks.app-scope</key>
+<true/>
+```
+
+### Universal (iOS + macOS)
+
+**Security-Scoped Bookmarks Best Practices**
+
+```swift
+// ALWAYS call startAccessingSecurityScopedResource
+let url = // ... user-selected URL
+guard url.startAccessingSecurityScopedResource() else {
+    print("Failed to access resource!")
+    return
+}
+
+// Do your work...
+try FileSystemManager.shared.saveNote(...)
+
+// ALWAYS balance with stopAccessingSecurityScopedResource
+// (Usually when done with the folder or app terminates)
+url.stopAccessingSecurityScopedResource()
+```
+
+**Create and Store Bookmarks**
+
+```swift
+// Save bookmark for persistent access
+let bookmarkData = try url.bookmarkData(
+    options: .minimalBookmark,
+    includingResourceValuesForKeys: nil,
+    relativeTo: nil
+)
+UserDefaults.standard.set(bookmarkData, forKey: "libraryBookmark")
+
+// Restore on next launch
+if let data = UserDefaults.standard.data(forKey: "libraryBookmark") {
+    var isStale = false
+    let url = try URL(
+        resolvingBookmarkData: data,
+        options: .withoutUI,
+        relativeTo: nil,
+        bookmarkDataIsStale: &isStale
+    )
+
+    if url.startAccessingSecurityScopedResource() {
+        // Use the URL
+    }
+}
+```
+
+## 🔒 Permissions Checklist
+
+Before using NightGardFileSystem, ensure:
+
+**iOS:**
+- [ ] `NSPhotoLibraryUsageDescription` in Info.plist
+- [ ] `NSCameraUsageDescription` in Info.plist (if using camera)
+- [ ] App Sandbox enabled with User Selected File: Read/Write
+- [ ] Security-scoped bookmarks properly saved/restored
+
+**macOS (Self-Distributed):**
+- [ ] App Sandbox **disabled** OR
+- [ ] App Sandbox enabled with User Selected File: Read/Write
+- [ ] Entitlements configured for bookmarks
+- [ ] Security-scoped resource access in code
+
+**macOS (Mac App Store):**
+- [ ] App Sandbox enabled
+- [ ] User Selected File: Read/Write permission
+- [ ] Bookmarks entitlement configured
+- [ ] Security-scoped resource access implemented
+
+## 🐛 Common Issues
+
+**"Operation not permitted" error**
+- Check App Sandbox settings
+- Verify you called `startAccessingSecurityScopedResource()`
+- Make sure bookmark was created properly
+
+**"No such file or directory" after app restart**
+- You need to save and restore security-scoped bookmarks
+- See bookmark example above
+
+**Photos not loading**
+- Check `NSPhotoLibraryUsageDescription` is in Info.plist
+- User may have denied permission - check in Settings
+
 ## License
 
 Part of the NightGard system of apps.
