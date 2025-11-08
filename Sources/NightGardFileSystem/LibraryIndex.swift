@@ -122,6 +122,16 @@ public struct PageMetadata: Codable, Identifiable {
     }
 }
 
+// MARK: - Backward Compatibility
+
+/// Backward compatibility alias for old TableOfContents name
+public typealias TableOfContents = NotebookTOC
+
+/// Backward compatibility extension for NoteEntry
+public extension NotebookTOC {
+    typealias NoteEntry = PageMetadata
+}
+
 // MARK: - Page Frontmatter
 
 /// YAML-style frontmatter at the top of markdown files
