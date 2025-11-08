@@ -21,6 +21,13 @@ public struct LibraryIndex: Codable {
     public var lastModified: Date
     public var notebooks: [NotebookMetadata]
 
+    public init(libraryName: String, createdDate: Date, lastModified: Date, notebooks: [NotebookMetadata]) {
+        self.libraryName = libraryName
+        self.createdDate = createdDate
+        self.lastModified = lastModified
+        self.notebooks = notebooks
+    }
+
     enum CodingKeys: String, CodingKey {
         case libraryName, createdDate, lastModified, notebooks
     }
@@ -38,6 +45,18 @@ public struct NotebookMetadata: Codable, Identifiable {
     public var noteCount: Int
     public var lastModified: Date
     public var createdDate: Date
+
+    public init(id: String, displayName: String, description: String, tags: [String], icon: String?, color: String?, noteCount: Int, lastModified: Date, createdDate: Date) {
+        self.id = id
+        self.displayName = displayName
+        self.description = description
+        self.tags = tags
+        self.icon = icon
+        self.color = color
+        self.noteCount = noteCount
+        self.lastModified = lastModified
+        self.createdDate = createdDate
+    }
 
     enum CodingKeys: String, CodingKey {
         case id, displayName, description, tags, icon, color
@@ -58,6 +77,16 @@ public struct NotebookTOC: Codable {
     public var lastModified: Date
     public var pages: [PageMetadata]
 
+    public init(notebookName: String, displayName: String, description: String, tags: [String], createdDate: Date, lastModified: Date, pages: [PageMetadata]) {
+        self.notebookName = notebookName
+        self.displayName = displayName
+        self.description = description
+        self.tags = tags
+        self.createdDate = createdDate
+        self.lastModified = lastModified
+        self.pages = pages
+    }
+
     enum CodingKeys: String, CodingKey {
         case notebookName, displayName, description, tags
         case createdDate, lastModified, pages
@@ -75,6 +104,17 @@ public struct PageMetadata: Codable, Identifiable {
     public var createdDate: Date
     public var lastModified: Date
     public var hasFrontmatter: Bool
+
+    public init(id: String, title: String, tags: [String], preview: String, wordCount: Int, createdDate: Date, lastModified: Date, hasFrontmatter: Bool) {
+        self.id = id
+        self.title = title
+        self.tags = tags
+        self.preview = preview
+        self.wordCount = wordCount
+        self.createdDate = createdDate
+        self.lastModified = lastModified
+        self.hasFrontmatter = hasFrontmatter
+    }
 
     enum CodingKeys: String, CodingKey {
         case id, title, tags, preview, wordCount
